@@ -7,19 +7,20 @@ using System.Threading.Tasks;
 
 namespace EMAProject.Models
 {
-    public class GdprPolicyWebView
+    public class ClientIntervention
     {
-        [ForeignKey("GdprPolicy")]
+        [Key]
         [Column(Order = 1)]
+        [ForeignKey("Client")]
         [Required]
-        public int GdprPolicyID { get; set; }
-        public GdprPolicy GdprPolicy { get; set; }
-        
-        [ForeignKey("WebView")]
-        [Column(Order = 2)]
-        [Required]
-        public int WebViewID { get; set; }
-        public WebView WebView { get; set; }
+        public int ClientID { get; set; }
+        public Client Client { get; set; }
 
+        [Key]
+        [Column(Order = 2)]
+        [ForeignKey("Intervention")]
+        [Required]
+        public int InterventionID { get; set; }
+        public Intervention Intervention { get; set; }
     }
 }

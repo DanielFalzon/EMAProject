@@ -7,14 +7,17 @@ using System.Threading.Tasks;
 
 namespace EMAProject.Models
 {
-    public class WebView
+    public class HealthCareProvider
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int WebViewID { get; set; }
-        [Required]
-        public string ViewName { get; set; }
+        public int HealthCareProviderID { get; set; }
 
-        public ICollection<GdprPolicyWebView> GdprPolicyWebViews { get; set; }
+        public string Name { get; set; }
+
+        [Display(Name = "Contact Number")]
+        public string ContactNumber { get; set; }
+
+        public ICollection<ClientHealthCareProvider> ClientHealthCareProviders { get; set; }
     }
 }

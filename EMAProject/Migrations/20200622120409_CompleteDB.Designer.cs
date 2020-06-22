@@ -4,14 +4,16 @@ using EMAProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EMAProject.Migrations
 {
     [DbContext(typeof(ClinicContext))]
-    partial class ClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20200622120409_CompleteDB")]
+    partial class CompleteDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,7 +229,7 @@ namespace EMAProject.Migrations
                     b.Property<bool>("IsDelivered")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("SessionNoteID")
+                    b.Property<int>("SessionNoteID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("SessionTime")
@@ -328,7 +330,9 @@ namespace EMAProject.Migrations
 
                     b.HasOne("EMAProject.Models.SessionNote", "SessionNote")
                         .WithMany()
-                        .HasForeignKey("SessionNoteID");
+                        .HasForeignKey("SessionNoteID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
