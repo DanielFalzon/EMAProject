@@ -47,7 +47,7 @@ namespace EMAProject.Models
         [Display(Name = "Locality")]
         public string AddressLine3 { get; set; }
 
-        [Display(Name = "ReferredBy")]
+        [Display(Name = "Referred By")]
         public string ReferredBy { get; set; }
 
         [Display(Name = "Subscribe Client to Content")]
@@ -60,18 +60,20 @@ namespace EMAProject.Models
         public string Medications { get; set; }
 
         //Significant Other Information
-        [Display(Name = "SO: ")]
+        [Display(Name = "First Name: ")]
         public string SoFirstName { get; set; }
 
-        [Display(Name = "SO: ")]
+        [Display(Name = "Last Name: ")]
         public string SoLastName { get; set; }
 
-        [Display(Name = "SO: ")]
+        [Display(Name = "Relationship with SO: ")]
         public string SoRelationship { get; set; }
 
-        [Display(Name = "SO: ")]
+        [Display(Name = "Contact Number: ")]
         public string SoContactNumber { get; set; }
 
         public ICollection<ClientHealthCareProvider> ClientHealthcareProviders;
+
+        public ICollection<ClientIntervention> ClientInterventions;
     }
 }

@@ -1,0 +1,66 @@
+﻿@model IEnumerable<EMAProject.Models.Intervention>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PreInterventionScore)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostInterventionScore)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Antecedence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Behaviours)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Consequence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Treatment)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PreInterventionScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostInterventionScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Antecedence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Behaviours)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Consequence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Treatment)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.InterventionID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.InterventionID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.InterventionID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
