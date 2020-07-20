@@ -28,6 +28,7 @@ namespace EMAProject.Models
         [Required]
         [Column(TypeName = "date")]
         [Display(Name = "Date of Birth")]
+        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime DateOfBirth { get; set; }
 
         [Required]

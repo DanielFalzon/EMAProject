@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EMAProject.Data;
 using EMAProject.Models;
+using System.Runtime.InteropServices;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 
 namespace EMAProject.Controllers
 {
@@ -44,8 +47,21 @@ namespace EMAProject.Controllers
         }
 
         // GET: Clients/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            /* D.F. 20/07/2020
+             * 1. Get all of the current healthcare providers. 
+             * 2. Show all of the healthcare providers to a table.
+             * 3. When user clicks on one of the items, the ID must be send to the session.
+             */
+            if (TempData["ClientCreateChosenHCP"] == null) {
+                TempData["ClientCreateChosenHCP"] = new List<int>();
+            }
+
+            List<HealthCareProvider> healthCareProviders = await _context.HealthCareProviders.ToListAsync();
+
+            ViewData["AllHCP"] = healthCareProviders;
+
             return View();
         }
 

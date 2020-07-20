@@ -34,7 +34,7 @@ namespace EMAProject
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
-            });
+            }).AddRazorRuntimeCompilation();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
