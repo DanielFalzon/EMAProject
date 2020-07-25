@@ -10,6 +10,8 @@ using EMAProject.Models;
 using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.CodeAnalysis.FlowAnalysis;
+using EMAProject.Classes;
+
 
 namespace EMAProject.Controllers
 {
@@ -23,9 +25,23 @@ namespace EMAProject.Controllers
         }
 
         // GET: Clients
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.Clients.ToListAsync());
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            var clients = from s in _context.Clients select s;
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    clients = clients.OrderByDescending(s => s.FirstName);
+                    break;
+                default:
+                    clients = clients.OrderBy(s => s.FirstName);
+                    break;
+            }
+
+            return View(await clients.AsNoTracking().ToListAsync());
         }
 
         // GET: Clients/Details/5
@@ -47,20 +63,21 @@ namespace EMAProject.Controllers
         }
 
         // GET: Clients/Create
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             /* D.F. 20/07/2020
              * 1. Get all of the current healthcare providers. 
              * 2. Show all of the healthcare providers to a table.
              * 3. When user clicks on one of the items, the ID must be send to the session.
+             * 4. Instead, store these in JS and set the checked value while table is being rendered. 
              */
             if (TempData["ClientCreateChosenHCP"] == null) {
                 TempData["ClientCreateChosenHCP"] = new List<int>();
             }
 
-            List<HealthCareProvider> healthCareProviders = await _context.HealthCareProviders.ToListAsync();
+            IHealthCareProviderService healthCareProviderService = new HealthCareProviderService(_context);
 
-            ViewData["AllHCP"] = healthCareProviders;
+            ViewData["HCPModel"] = new HealthCareProvidersPaginationModel(healthCareProviderService);
 
             return View();
         }

@@ -1,0 +1,34 @@
+﻿@model EMAProject.Models.HealthCareProvidersPaginationModel
+<!--
+    
+    - AJAX is needed to refresh the table data being displayed
+    - Endpoint is required to send JSON to javascrtipt with html of new elements. 
+
+    - On click of each checkbox, set a Session variable to persistently hold the ids of selected healthcare providers.
+    - When partial is loaded, check if each sysref checkbox is in the list of ints stored in the session.
+
+-->
+
+<table id="hcptable_data" class="table-sm table-striped w-100 mb-2">
+@foreach (HealthCareProvider provider in Model.Data) 
+{ 
+    <!--These should be generated via javascript rather than razor-->
+    <tr>
+        <td>@provider.Name</td>
+        <td>@provider.ContactNumber</td>
+        <td><input type="checkbox" value="@provider.HealthCareProviderID" /></td>
+    </tr>
+}
+</table>
+<div>
+    
+    <ul class="pagination">
+        <li class="page-item">
+            <a id="hcptable_prev" href="#" data-prevpage="@(Model.CurrentPage -1)" class="page-link">Previous</a>
+        </li>
+        
+        <li class="page-item">
+            <a id="hcptable_next" href="#" data-nextpage="@(Model.CurrentPage +1)" class="page-link">Next</a>
+        </li>
+    </ul>
+</div>

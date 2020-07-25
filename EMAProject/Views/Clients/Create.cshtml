@@ -5,6 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script>
+    window.onload = function () {
+        this.fetch('/JsonProvider/GetHcpPaginatedTable?pageNum=1')
+            .then(res => {
+                return res.text();
+            })
+            .then(data => {
+                this.console.log(data);
+            })
+    }
+</script>
+
 <h1>Client Registry Page</h1>
 <br />
 
@@ -124,12 +136,9 @@
                     <span asp-validation-for="ClientHealthcareProviders" class="text-danger"></span>
                 </div>
                 <!--https://examples.bootstrap-table.com/#welcomes/from-data.html#view-source-->
-                @foreach (HealthCareProvider provider in (List<HealthCareProvider>)ViewData["AllHCP"])
-                {
-                    <ul>
-                        <li>@provider.Name</li>
-                    </ul>
-                }
+                <section id="js_hcptable_partial">
+                    <partial name="Partials/_HealthCareProvidersPaginationPartial" model="@ViewData["HCPModel"]" />
+                </section>
 
                 <a href="@Url.Action("create", "healthcareproviders")" target="_blank" class="btn btn-primary w-100">Create Healthcare Provider</a>
             </div>
