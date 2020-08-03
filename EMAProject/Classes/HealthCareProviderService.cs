@@ -10,7 +10,7 @@ namespace EMAProject.Classes
 {
     public interface IHealthCareProviderService 
     {
-        Task<List<HealthCareProvider>> GetPaginatedResult(int currentPage, int pageSize = 10);
+        Task<List<HealthCareProvider>> GetPaginatedResult(int currentPage, int pageSize = 5);
         Task<int> GetCount();
     }
 
@@ -35,10 +35,10 @@ namespace EMAProject.Classes
             return data.Count;
         }
 
-        public async Task<List<HealthCareProvider>> GetPaginatedResult(int currentPage, int pageSize = 10)
+        public async Task<List<HealthCareProvider>> GetPaginatedResult(int currentPage, int pageSize = 5)
         {
             var data = await GetData();
-            return data.OrderBy(x => x.Name).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+            return data.OrderBy(x => x.Name).Skip((currentPage) * pageSize).Take(pageSize).ToList();
         }
     }
 }

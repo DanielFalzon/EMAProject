@@ -2,7 +2,7 @@
 using EMAProject.Data;
 using EMAProject.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using System.Text.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,20 +19,12 @@ namespace EMAProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetHcpPaginatedTable([FromQuery] int pageNum) 
+        public JsonResult GetHcpPaginatedTable([FromQuery] int pageNum = 0) 
         {
-            /* Return deserialised JSON from model.data which holds
-             * 1 - Whether the hcp is selected
-             * 2 - Name of HCP
-             * 3 - Contact number of HCP
-             */
             IHealthCareProviderService healthCareProviderService = new HealthCareProviderService(_context);
-            HealthCareProvidersPaginationModel model = new HealthCareProvidersPaginationModel(healthCareProviderService)
-            {
-                CurrentPage = pageNum
-            };
-            
-            return PartialView("~/Views/Clients/Partials/_HealthCareProvidersPaginationPartial.cshtml", model);
+            HealthCareProvidersPaginationModel model = new HealthCareProvidersPaginationModel(healthCareProviderService, pageNum);
+
+            return Json(JsonSerializer.Serialize(model));
         }
     }
 }

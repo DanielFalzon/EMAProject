@@ -5,17 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script>
-    window.onload = function () {
-        this.fetch('/JsonProvider/GetHcpPaginatedTable?pageNum=1')
-            .then(res => {
-                return res.text();
-            })
-            .then(data => {
-                this.console.log(data);
-            })
-    }
-</script>
+
 
 <h1>Client Registry Page</h1>
 <br />

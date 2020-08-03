@@ -11,9 +11,11 @@ namespace EMAProject.Models
     {
         private readonly IHealthCareProviderService _healthCareProviderService;
 
-        public HealthCareProvidersPaginationModel(IHealthCareProviderService healthCareProviderService)
+        public HealthCareProvidersPaginationModel(IHealthCareProviderService healthCareProviderService, int inCurrentPage = 1)
         {
             _healthCareProviderService = healthCareProviderService;
+            CurrentPage = inCurrentPage;
+
             PopulateModel();
         }
 

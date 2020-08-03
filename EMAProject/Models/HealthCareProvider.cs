@@ -18,6 +18,9 @@ namespace EMAProject.Models
         [Display(Name = "Contact Number")]
         public string ContactNumber { get; set; }
 
+        [NotMapped]
+        public bool isSelected { get; set; }
+
         public ICollection<ClientHealthCareProvider> ClientHealthCareProviders { get; set; }
     }
 }
