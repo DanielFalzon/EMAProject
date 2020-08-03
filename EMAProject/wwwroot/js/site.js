@@ -3,9 +3,8 @@
 
 // Write your JavaScript code.
 
-import HcpPartialTable from './emitters/HcpPartialTable.js';
+import hcpPartialTable from './emitters/HcpPartialTable.js';
 
 window.onload = function () {
-    var hcp = new HcpPartialTable();
-    hcp.init();
+    hcpPartialTable.init();
 }

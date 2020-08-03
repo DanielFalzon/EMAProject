@@ -120,17 +120,14 @@
                 </div>
                 <h4>Healthcare Provider</h4>
                 <hr />
-                <div class="form-group">
-                    <label asp-for="ClientHealthcareProviders" class="control-label">Healthcare Provider Dropdown</label>
-                    <input asp-for="ClientHealthcareProviders" class="form-control" />
-                    <span asp-validation-for="ClientHealthcareProviders" class="text-danger"></span>
-                </div>
+                <a href="@Url.Action("create", "healthcareproviders")" target="_blank" class="btn btn-primary w-100 mb-4">Create Healthcare Provider</a>
+                <br />
                 <!--https://examples.bootstrap-table.com/#welcomes/from-data.html#view-source-->
                 <section id="js_hcptable_partial">
                     <partial name="Partials/_HealthCareProvidersPaginationPartial" model="@ViewData["HCPModel"]" />
                 </section>
 
-                <a href="@Url.Action("create", "healthcareproviders")" target="_blank" class="btn btn-primary w-100">Create Healthcare Provider</a>
+                
             </div>
             <hr />
         </div>

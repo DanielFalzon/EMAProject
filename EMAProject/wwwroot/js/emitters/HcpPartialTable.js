@@ -1,21 +1,25 @@
 ﻿import observableInstance from '../helpers/Observable.js';
 import HcpPartialTableLoader from '../modules/HcpPartialTableLoader.js';
 
-export default class HcpPartialTable {
+class HcpPartialTable {
     constructor() {
 
     }
 
     init() {
         if (!document.querySelector('#hcptable_data')) return;
+
         this.loader = new HcpPartialTableLoader();
         this.loader.init();
 
+        this._table = document.querySelector('#hcptable_data');
         this._pagBtns = document.querySelectorAll(".js_hcptable-pagination");
-        //var _refButton = document.querySelector(".js_hcptable-refresh");
-        this._itemCheckBoxes = document.querySelectorAll(".js_hcptable-selectors");
 
         this.assignClickEvents();
+    }
+
+    get table() {
+        return this._table;
     }
 
     get paginationBtns() {
@@ -28,13 +32,21 @@ export default class HcpPartialTable {
     }
 
     selectRow() {
-
+        this.table.addEventListener("click", function (e) {
+            if (e.target.tagName === "INPUT") {
+                observableInstance.publish("ToggleSelectedHcp", e.target.value);
+            }
+        })
     }
 
     paginateTable() {
         Array.from(this.paginationBtns).map((el) => {
-            console.log(el);
+            el.addEventListener("click", function () {
+                observableInstance.publish("PaginateResults", el.dataset.topage);
+            });
         })
-       observableInstance.publish("PaginateResults", 1);
     }
 }
+
+const hcpPartialTable = new HcpPartialTable();
+export default hcpPartialTable;
