@@ -1,34 +1,32 @@
 ﻿@model EMAProject.Models.HealthCareProvidersPaginationModel
 <!--
-    
+
     - AJAX is needed to refresh the table data being displayed
-    - Endpoint is required to send JSON to javascrtipt with html of new elements. 
+    - Endpoint is required to send JSON to javascrtipt with html of new elements.
 
     - On click of each checkbox, set a Session variable to persistently hold the ids of selected healthcare providers.
     - When partial is loaded, check if each sysref checkbox is in the list of ints stored in the session.
 
 -->
 
-<table id="hcptable_data" class="table-sm table-striped w-100 mb-2">
-@foreach (HealthCareProvider provider in Model.Data) 
-{ 
-    <!--These should be generated via javascript rather than razor-->
-    <tr>
-        <td>@provider.Name</td>
-        <td>@provider.ContactNumber</td>
-        <td><input class="js_hcptable-selectors" type="checkbox" value="@provider.HealthCareProviderID" /></td>
-    </tr>
-}
+<table id="hcptable_data" class="table-sm table-striped w-100 mb-2" style="height:200px;">
+    @foreach (HealthCareProvider provider in Model.Data)
+    {
+        <!--These should be generated via javascript rather than razor-->
+        <tr>
+            <td>@provider.Name</td>
+            <td>@provider.ContactNumber</td>
+            <td><input class="js_hcptable-selectors" type="checkbox" value="@provider.HealthCareProviderID" /></td>
+        </tr>
+    }
 </table>
 <div>
-    
-    <ul class="pagination">
-        <li class="page-item">
-            <btn id="hcptable_prev" class="js_hcptable-pagination page-link" data-topage="@(Model.CurrentPage -1)" >Previous</btn>
-        </li>
-        
-        <li class="page-item">
-            <btn id="hcptable_next" class="js_hcptable-pagination page-link" data-topage="@(Model.CurrentPage +1)" >Next</btn>
-        </li>
-    </ul>
+
+    <div class="d-flex justify-content-between">
+        <a href="@Url.Action("create", "healthcareproviders")" target="_blank" class="btn btn-primary ">Create Provider</a>
+        <div class="d-flex justify-content-end">
+            <button id="hcptable_prev" type="button" class="js_hcptable-pagination btn btn-outline-secondary" data-topage="@(Model.CurrentPage -1)" disabled>Previous</button>
+            <button id="hcptable_next" type="button" class="js_hcptable-pagination btn btn-outline-secondary ml-2" data-topage="@(Model.CurrentPage +1)">Next</button>
+        </div>
+    </div>
 </div>

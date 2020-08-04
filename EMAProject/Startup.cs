@@ -29,12 +29,14 @@ namespace EMAProject
             services.AddDbContext<ClinicContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            
+            services.AddSession();
 
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
-            }).AddRazorRuntimeCompilation();
+            })
+            .AddRazorRuntimeCompilation()
+            .AddSessionStateTempDataProvider();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -60,6 +62,7 @@ namespace EMAProject
 
             app.UseAuthorization();
 
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

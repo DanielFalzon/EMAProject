@@ -34,7 +34,7 @@ class HcpPartialTable {
     selectRow() {
         this.table.addEventListener("click", function (e) {
             if (e.target.tagName === "INPUT") {
-                observableInstance.publish("ToggleSelectedHcp", e.target.value);
+                observableInstance.publish("ToggleSelectedHcp", e.target);
             }
         })
     }

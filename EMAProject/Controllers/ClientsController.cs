@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using EMAProject.Classes;
-
+using EMAProject.Common;
 
 namespace EMAProject.Controllers
 {
@@ -76,6 +76,8 @@ namespace EMAProject.Controllers
             }
 
             IHealthCareProviderService healthCareProviderService = new HealthCareProviderService(_context);
+
+            HttpContext.Session.SetComplexData("HCPSelectedItems", new List<int>());
 
             ViewData["HCPModel"] = new HealthCareProvidersPaginationModel(healthCareProviderService);
 

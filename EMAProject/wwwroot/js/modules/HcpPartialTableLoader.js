@@ -8,9 +8,11 @@ export default class HcpPartialTableLoader {
 
     init() {
         if (!document.querySelector('#hcptable_data')) return;
-
-        this._tableContainer = document.querySelector('#hcptable_data');
         this._fetchApiCaller = new FetchApiCaller();
+
+        this._tableContainer = document.querySelector('#hcptable_data tbody');
+        this._prevBtn = document.querySelector("#hcptable_prev");
+        this._nextBtn = document.querySelector("#hcptable_next");
 
         observableInstance.subscribe("ToggleSelectedHcp", this.toggleSelectedStatus.bind(this));
         observableInstance.subscribe("PaginateResults", this.paginateResults.bind(this));
@@ -24,6 +26,14 @@ export default class HcpPartialTableLoader {
         return this._tableContainer;
     }
 
+    get prevBtn() {
+        return this._prevBtn;
+    }
+
+    get nextBtn() {
+        return this._nextBtn;
+    }
+
     async paginateResults(page) {
         let data = await this.apiCaller.callGet(`/JsonProvider/GetHcpPaginatedTable?pageNum=${page}`);
         let jsonData = JSON.parse(data);
@@ -31,22 +41,56 @@ export default class HcpPartialTableLoader {
         this.refreshResults(jsonData);
     }
 
-    toggleSelectedStatus(hcpID) {
+    async toggleSelectedStatus(el) {
         /* D.F.
          * Will be rendered redundant as they need to be added to the session to be used on POST.
          */
-        if (this.selectedHcps.includes(hcpID) == true) {
-            this.selectedHcps = this.selectedHcps.filter(item => item !== hcpID);
-        } else {
-            this.selectedHcps.push(hcpID);
+        let params = {
+            "hcpId": el.value
         }
-        console.log(this.selectedHcps);
+
+        console.log(JSON.stringify(params));
+
+        let data = await this.apiCaller.callPost(`/JsonProvider/ToggleSelectedHcp`, params);
+        let jsonData = JSON.parse(data);
+
+        el.checked = jsonData;
+
+        console.log(jsonData);
     }
 
     refreshResults(jsonResults) {
-        /* D.F
-         * Method used to render the rows based on the returned data. 
-         */
+
+        this.prevBtn.disabled = !jsonResults["ShowPrevious"];
+        this.nextBtn.disabled = !jsonResults["ShowNext"];
+
+        this.prevBtn.dataset.topage = jsonResults["CurrentPage"] - 1;
+        this.nextBtn.dataset.topage = jsonResults["CurrentPage"] + 1;
+
+        this.tableContianer.innerHTML = "";
+
+        jsonResults["Data"].map((rowData) => {
+             this.tableContianer.appendChild(this.buildRow(rowData));
+        });
+
         console.log(jsonResults);
+    }
+
+    buildRow(rowData) {
+        var newRow = document.createElement("tr");
+        var checkBoxRow = document.createElement("td");
+
+        var checkBox = document.createElement("input");
+
+        checkBox.type = 'checkbox';
+        checkBox.value = rowData["HealthCareProviderID"];
+        checkBox.checked = rowData["isSelected"];
+        checkBox.classList = 'js_hcptable-selectors';
+        checkBoxRow.appendChild(checkBox);
+
+        newRow.innerHTML = `<td>${rowData["Name"]}</td>` + `<td>${rowData["ContactNumber"]}</td>`;
+        newRow.appendChild(checkBoxRow);
+
+        return newRow;
     }
 }

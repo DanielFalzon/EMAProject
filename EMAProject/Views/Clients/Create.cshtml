@@ -120,14 +120,16 @@
                 </div>
                 <h4>Healthcare Provider</h4>
                 <hr />
-                <a href="@Url.Action("create", "healthcareproviders")" target="_blank" class="btn btn-primary w-100 mb-4">Create Healthcare Provider</a>
+                <label class="control-label mb-3">Select Client's Healthcare Providers: </label>
                 <br />
                 <!--https://examples.bootstrap-table.com/#welcomes/from-data.html#view-source-->
                 <section id="js_hcptable_partial">
                     <partial name="Partials/_HealthCareProvidersPaginationPartial" model="@ViewData["HCPModel"]" />
                 </section>
-
+                <br />
                 
+
+
             </div>
             <hr />
         </div>

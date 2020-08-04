@@ -63,6 +63,8 @@ namespace EMAProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(healthCareProvider);
+
+           
         }
 
         // GET: HealthCareProviders/Edit/5
