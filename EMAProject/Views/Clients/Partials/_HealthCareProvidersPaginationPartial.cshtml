@@ -1,4 +1,5 @@
 ﻿@model EMAProject.Models.HealthCareProvidersPaginationModel
+@using Microsoft.AspNetCore.Http
 <!--
 
     - AJAX is needed to refresh the table data being displayed
@@ -9,6 +10,11 @@
 
 -->
 
+@{ 
+    List<int> selectedHcp = (List<int>)TempData["HCPSelectedItems"];
+
+}
+
 <table id="hcptable_data" class="table-sm table-striped w-100 mb-2" style="height:200px;">
     @foreach (HealthCareProvider provider in Model.Data)
     {
@@ -16,8 +22,9 @@
         <tr>
             <td>@provider.Name</td>
             <td>@provider.ContactNumber</td>
-            <td><input class="js_hcptable-selectors" type="checkbox" value="@provider.HealthCareProviderID" /></td>
-        </tr>
+            <td><input class="js_hcptable-selectors" type="checkbox" value="@provider.HealthCareProviderID" @if (selectedHcp.Contains(provider.HealthCareProviderID)) { @Html.Raw("checked") } /></td>
+
+</tr>
     }
 </table>
 <div>

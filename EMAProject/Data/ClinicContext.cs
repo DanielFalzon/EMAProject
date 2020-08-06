@@ -9,6 +9,8 @@ namespace EMAProject.Data
     {
         public ClinicContext(DbContextOptions<ClinicContext> options) : base(options)
         {
+            this.ChangeTracker.LazyLoadingEnabled = false;
+            
         }
 
         public DbSet<GdprPolicy> GdprPolicies {get; set;}
@@ -39,6 +41,14 @@ namespace EMAProject.Data
             modelBuilder.Entity<Session>()
                 .Property(s => s.CancelledBy)
                 .HasConversion<string>();
+
+            modelBuilder.Entity<ClientHealthCareProvider>()
+                .HasOne(chcp => chcp.Client)
+                .WithMany(chcp => chcp.ClientHealthcareProviders);
+
+            modelBuilder.Entity<ClientHealthCareProvider>()
+                .HasOne(chcp => chcp.HealthCareProvider)
+                .WithMany(chcp => chcp.ClientHealthCareProviders);
 
 
             modelBuilder.Entity<GdprPolicy>().ToTable("GdprPolicy");

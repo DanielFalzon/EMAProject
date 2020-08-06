@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EMAProject.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -73,8 +75,43 @@ namespace EMAProject.Models
         [Display(Name = "Contact Number: ")]
         public string SoContactNumber { get; set; }
 
-        public ICollection<ClientHealthCareProvider> ClientHealthcareProviders;
+        public List<ClientHealthCareProvider> ClientHealthcareProviders { get; set; }
 
-        public ICollection<ClientIntervention> ClientInterventions;
+        public List<ClientIntervention> ClientInterventions { get; set; }
+
+        public void SetHealthCareProviders(ClinicContext _context) {
+            this.ClientHealthcareProviders = _context.Clients.Where(c => c.ClientID == ClientID).Include(c => c.ClientHealthcareProviders).Select(c => c.ClientHealthcareProviders).SingleOrDefault().ToList();
+        }
+
+        public void ToggleHealthCareProviders(ClinicContext _context, List<int> inSelectedHcps) {
+            SetHealthCareProviders(_context);
+
+            List<int> clientHcps = this.ClientHealthcareProviders.Select(x => x.HealthCareProviderID).ToList();
+            List<int> selectedHcps = inSelectedHcps;
+            List<int> allHcpIds = new List<int>();
+
+            allHcpIds.AddRange(clientHcps);
+            allHcpIds.AddRange(selectedHcps);
+
+            foreach (int hcpId in allHcpIds.Distinct())
+            {
+                if (!clientHcps.Contains(hcpId) && selectedHcps.Contains(hcpId))
+                {
+                    _context.Add(new ClientHealthCareProvider()
+                    {
+                        ClientID = ClientID,
+                        HealthCareProviderID = hcpId
+                    });
+                }
+                else
+                {
+                    if (clientHcps.Contains(hcpId) && !selectedHcps.Contains(hcpId))
+                    {
+                        ClientHealthCareProvider chcpToDelete = _context.ClientHealthCareProviders.FirstOrDefault(chcp => chcp.ClientID == ClientID && chcp.HealthCareProviderID == hcpId);
+                        _context.ClientHealthCareProviders.Remove(chcpToDelete);
+                    }
+                }
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using EMAProject.Classes;
 using EMAProject.Common;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace EMAProject.Controllers
 {
@@ -52,8 +53,13 @@ namespace EMAProject.Controllers
                 return NotFound();
             }
 
+
             var client = await _context.Clients
+                .Include(c => c.ClientHealthcareProviders)
+                .ThenInclude(chp => chp.HealthCareProvider)
                 .FirstOrDefaultAsync(m => m.ClientID == id);
+
+
             if (client == null)
             {
                 return NotFound();
@@ -78,6 +84,7 @@ namespace EMAProject.Controllers
             IHealthCareProviderService healthCareProviderService = new HealthCareProviderService(_context);
 
             HttpContext.Session.SetComplexData("HCPSelectedItems", new List<int>());
+            TempData["HCPSelectedItems"] = new List<int>();
 
             ViewData["HCPModel"] = new HealthCareProvidersPaginationModel(healthCareProviderService);
 
@@ -93,8 +100,26 @@ namespace EMAProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                List<int> selectedHcps = HttpContext.Session.GetComplexData<List<int>>("HCPSelectedItems");
+                
+
                 _context.Add(client);
                 await _context.SaveChangesAsync();
+
+                foreach (int hcp in selectedHcps)
+                {
+                    await _context.AddAsync(new ClientHealthCareProvider()
+                    {
+                        ClientID = client.ClientID,
+                        HealthCareProviderID = hcp
+                    });
+
+                }
+
+                await _context.SaveChangesAsync();
+
+                HttpContext.Session.SetComplexData("HCPSelectedItems", new List<int>());
+
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -108,7 +133,23 @@ namespace EMAProject.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Clients.FindAsync(id);
+            var client = await _context.Clients.
+                Include(c => c.ClientHealthcareProviders)
+                .ThenInclude(hcp => hcp.HealthCareProvider)
+                .FirstOrDefaultAsync(c => c.ClientID == id);
+
+            List<int> hcpSelectedItems = new List<int>();
+
+            foreach (ClientHealthCareProvider chcp in client.ClientHealthcareProviders) {
+                hcpSelectedItems.Add(chcp.HealthCareProviderID);
+            }
+
+            HttpContext.Session.SetComplexData("HCPSelectedItems", hcpSelectedItems);
+            TempData["HCPSelectedItems"] = hcpSelectedItems;
+
+            IHealthCareProviderService healthCareProviderService = new HealthCareProviderService(_context);
+            ViewData["HCPModel"] = new HealthCareProvidersPaginationModel(healthCareProviderService);
+
             if (client == null)
             {
                 return NotFound();
@@ -121,7 +162,7 @@ namespace EMAProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ClientID,NiNumber,FirstName,Lastname,DateOfBirth,ContactNumber,Email,AddressLine1,AddressLine2,AddressLine3,ReferredBy,Subscriber,ClientNotes,Medications,SoFirstName,SoLastName,SoRelationship,SoContactNumber")] Client client)
+        public async Task<IActionResult> Edit(int id, [Bind("ClientID,NiNumber,FirstName,Lastname,DateOfBirth,ContactNumber,Email,AddressLine1,AddressLine2,AddressLine3,ReferredBy,Subscriber,ClientNotes,Medications,SoFirstName,SoLastName,SoRelationship,SoContactNumber,ClientHealthcareProviders")] Client client)
         {
             if (id != client.ClientID)
             {
@@ -132,6 +173,10 @@ namespace EMAProject.Controllers
             {
                 try
                 {
+                    //EMA Code Snippet
+                    //HttpContext.Session.GetComplexData<List<int>>("HCPSelectedItems")
+                    client.ToggleHealthCareProviders(_context, HttpContext.Session.GetComplexData<List<int>>("HCPSelectedItems"));
+
                     _context.Update(client);
                     await _context.SaveChangesAsync();
                 }

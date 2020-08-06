@@ -10,110 +10,126 @@
 <div>
     <h4>Client</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NiNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NiNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Lastname)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Lastname)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateOfBirth)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateOfBirth)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ContactNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ContactNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressLine1)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AddressLine1)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressLine2)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AddressLine2)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AddressLine3)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AddressLine3)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReferredBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReferredBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Subscriber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Subscriber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ClientNotes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ClientNotes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Medications)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Medications)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SoFirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SoFirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SoLastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SoLastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SoRelationship)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SoRelationship)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SoContactNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SoContactNumber)
-        </dd>
-    </dl>
+    <div class="row">
+    <div class="col-md-6">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NiNumber)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NiNumber)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Lastname)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Lastname)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DateOfBirth)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ContactNumber)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ContactNumber)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.AddressLine1)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.AddressLine1)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.AddressLine2)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.AddressLine2)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.AddressLine3)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.AddressLine3)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ReferredBy)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ReferredBy)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Subscriber)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Subscriber)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ClientNotes)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ClientNotes)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Medications)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Medications)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SoFirstName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SoFirstName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SoLastName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SoLastName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SoRelationship)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SoRelationship)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.SoContactNumber)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SoContactNumber)
+            </dd>
+        </dl>
+    </div>
+    <div class="col-md-6">
+        <strong>Healthcare Proivders</strong>
+        <table id="hcptable_data" class="table-sm table-striped w-100 my-2">
+            @foreach (ClientHealthCareProvider hcp in Model.ClientHealthcareProviders)
+            {
+                <tr>
+                    <td>@hcp.HealthCareProvider.Name</td>
+                    <td>@hcp.HealthCareProvider.ContactNumber</td>
+                </tr>
+            }
+        </table>
+    </div>
+    </div>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.ClientID">Edit</a> |
