@@ -127,9 +127,15 @@
 </div>
 
 <section>
-    <h5>Active Client Interventions</h5>
+    <div class="d-flex justify-content-between">
+        <h5>Active Client Interventions</h5>
+        <a asp-controller="Interventions" asp-action="Create" asp-route-id="@Model.ClientID" class="btn btn-primary">
+            Create New Intervention
+        </a>
+    </div>
+    
     <br />
-    <table class="table">
+    <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th scope="col">Start Date</th>
@@ -140,14 +146,22 @@
                 <th scope="col">Quick Actions </th>
             </tr>
         </thead>
+        <tbody>
+            @foreach (ClientIntervention intervention in Model.ClientInterventions)
+            {
+                <tr>
+                    <td>@intervention.Intervention.FirstSession</td>
+                    <td>@intervention.Intervention.NextSession</td>
+                    <td>@intervention.Intervention.AttendedSessionCount</td>
+                    <td>@intervention.Intervention.CancelledSessionCouunt</td>
+                    <td>@intervention.Intervention.Behaviours</td>
+                    <td><a class="btn btn-secondary w-100" asp-controller="interventions" asp-action="details" asp-route-id="@intervention.InterventionID">View/Edit</a></td>
+                </tr>
+            }
+        </tbody>
     </table>
 
-    <div class="d-flex justify-content-end">
-        <a asp-controller="Interventions" asp-action="Create" asp-route-id="@Model.ClientID" class="btn btn-primary">
-            Create Intervention
-        </a>
 
-    </div>
     <hr />
 </section>
 

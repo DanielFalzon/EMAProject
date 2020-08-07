@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EMAProject.Data;
 using EMAProject.Models;
+using EMAProject.Common;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 
 namespace EMAProject.Controllers
 {
@@ -34,6 +36,8 @@ namespace EMAProject.Controllers
             }
 
             var intervention = await _context.Interventions
+                .Include(m => m.ClientInterventions)
+                .ThenInclude(m => m.Client)
                 .FirstOrDefaultAsync(m => m.InterventionID == id);
             if (intervention == null)
             {
@@ -46,10 +50,37 @@ namespace EMAProject.Controllers
         // GET: Interventions/Create
         public IActionResult Create(int id = -1)
         {
-            if (id > 0) {
-                TempData["Client"] = _context.Clients.Find(id);
+            if (id <= 0) { return NotFound(); }
+            
+            TempData["Client"] = _context.Clients.Find(id);
+            HttpContext.Session.SetComplexData("InterventionSelectedClient", TempData["Client"]);
+
+            List<Client> clients = _context.Clients.ToList();
+            List<SelectListItem> clientsListItems = new List<SelectListItem>();
+
+            clientsListItems.Add(new SelectListItem()
+            {
+                Value = "-1",
+                Text = "-"
+            });
+
+            foreach (Client client in clients) {
+                if (client.ClientID != id) 
+                {
+                    clientsListItems.Add(
+                        new SelectListItem()
+                        {
+                            Value = client.ClientID.ToString(),
+                            Text = $"{client.FirstName} {client.Lastname} ({client.NiNumber})"
+                        }
+                    );
+                }
             }
+
+            ViewData["InterventionAllClients"] = clientsListItems;
+
             return View();
+
         }
 
         // POST: Interventions/Create
@@ -57,14 +88,19 @@ namespace EMAProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("InterventionID,PreInterventionScore,PostInterventionScore,Antecedence,Behaviours,Consequence,Treatment")] Intervention intervention)
+        public async Task<IActionResult> Create([Bind("PreInterventionScore,Antecedence,Behaviours,Consequence,AdditionalClientID")] Intervention intervention)
         {
 
             if (ModelState.IsValid)
             {
                 _context.Add(intervention);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                /* Upon creation, invoke a function that maps the intervention ID with the 
+                 * ID of the client and any additional client.
+                 */
+                intervention.CreateClientInterventionLinks(_context, HttpContext.Session.GetComplexData<Client>("InterventionSelectedClient"));
+
+                return RedirectToAction("Details", "Clients", new { id = HttpContext.Session.GetComplexData<Client>("InterventionSelectedClient").ClientID});
             }
             return View(intervention);
         }

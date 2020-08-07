@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EMAProject.Data;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,9 +15,11 @@ namespace EMAProject.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int InterventionID { get; set; }
 
+        [Display(Name = "Pre-Intervention Score")]
         [Column(TypeName = "decimal(5, 2)")]
         public decimal PreInterventionScore { get; set; }
 
+        [Display(Name = "Post-Intervention Score")]
         [Column(TypeName = "decimal(5, 2)")]
         public decimal PostInterventionScore { get; set; }
 
@@ -27,20 +31,50 @@ namespace EMAProject.Models
         public string Consequence { get; set; }
 
         public string Treatment { get; set; }
-
+        
+        [NotMapped]
+        [Display(Name = "Additional Client (Optional)")]
+        public string AdditionalClientID { get; set; }
         //https://stackoverflow.com/questions/23413296/calculated-property-with-linq-expression
         [NotMapped]
-        public static DateTime FirstSession { get; set; }
+        public DateTime FirstSession { get; set; } = DateTime.Now;
         [NotMapped]
-        public static DateTime NextSession { get; set; }
+        public DateTime NextSession { get; set; } = DateTime.Now;
         [NotMapped]
-        public static int AttendedSessionCouunt { get; set; }
+        public int AttendedSessionCount { get; set; } = 0;
         [NotMapped]
-        public static int CancelledSessionCouunt { get; set; }
+        public int CancelledSessionCouunt { get; set; } = 0;
         [NotMapped]
-        public static bool IsComplete { get; set; }
-        public ICollection<ClientIntervention> ClientInterventions {get; set;}
+        public bool IsComplete { get; set; }
+        public ICollection<ClientIntervention> ClientInterventions {get; set;} = new List<ClientIntervention>();
 
-        public ICollection<Session> Sessions { get; set; }
+        public ICollection<Session> Sessions { get; set; } = new List<Session>();
+
+        public void CreateClientInterventionLinks(ClinicContext _context, Client client) {
+            List<ClientIntervention> clientInterventions = new List<ClientIntervention>();
+            clientInterventions.Add(
+                new ClientIntervention()
+                {
+                    ClientID = client.ClientID,
+                    InterventionID = InterventionID
+                }
+            );
+
+            int additionalClientID;
+            int.TryParse(AdditionalClientID, out additionalClientID);
+
+            if (additionalClientID > 0) {
+                clientInterventions.Add(
+                    new ClientIntervention()
+                    {
+                        ClientID = additionalClientID,
+                        InterventionID = InterventionID
+                    }
+                );
+            }
+
+            _context.ClientInterventions.AddRange(clientInterventions);
+            _context.SaveChanges();
+        }
     }
 }

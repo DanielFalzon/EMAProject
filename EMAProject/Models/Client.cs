@@ -75,9 +75,9 @@ namespace EMAProject.Models
         [Display(Name = "Contact Number: ")]
         public string SoContactNumber { get; set; }
 
-        public List<ClientHealthCareProvider> ClientHealthcareProviders { get; set; }
+        public List<ClientHealthCareProvider> ClientHealthcareProviders { get; set; } = new List<ClientHealthCareProvider>();
 
-        public List<ClientIntervention> ClientInterventions { get; set; }
+        public List<ClientIntervention> ClientInterventions { get; set; } = new List<ClientIntervention>();
 
         public void SetHealthCareProviders(ClinicContext _context) {
             this.ClientHealthcareProviders = _context.Clients.Where(c => c.ClientID == ClientID).Include(c => c.ClientHealthcareProviders).Select(c => c.ClientHealthcareProviders).SingleOrDefault().ToList();

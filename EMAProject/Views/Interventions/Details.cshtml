@@ -5,50 +5,102 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<div class="d-flex justify-content-between">
+    <h1>Intervention Details</h1>
+    <div>
+        <a href="#" class="btn btn-primary mt-2">Edit Intervention</a>
+        <a href="#" class="btn btn-danger ml-2 mt-2">Close Intervention</a>
+    </div>
 
-<div>
-    <h4>Intervention</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PreInterventionScore)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PreInterventionScore)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PostInterventionScore)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PostInterventionScore)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Antecedence)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Antecedence)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Behaviours)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Behaviours)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Consequence)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Consequence)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Treatment)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Treatment)
-        </dd>
-    </dl>
 </div>
+
+<br />
+
+<div class="jumbotron p-0">
+    <a class="btn btn-secondary w-100 text-left d-flex justify-content-between collapsed" data-toggle="collapse" href="#InterventionProfile" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <h5>
+            Intervention Details for
+            @foreach (ClientIntervention ci in Model.ClientInterventions)
+            {
+                <span>@ci.Client.FirstName</span> <span>@ci.Client.Lastname</span>
+            }
+        </h5>
+    </a>
+    <div class=" collapse" id="InterventionProfile">
+        <div class="row p-4 w-100">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="PreInterventionScore" class="control-label"></label>
+                    <input asp-for="PreInterventionScore" type="number" class="form-control" readonly />
+                    <span asp-validation-for="PreInterventionScore" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PostInterventionScore" class="control-label"></label>
+                    <input asp-for="PostInterventionScore" type="number" class="form-control" readonly />
+                    <span asp-validation-for="PostInterventionScore" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Antecedence" class="control-label"></label>
+                    <textarea asp-for="Antecedence" class="form-control" readonly></textarea>
+                    <span asp-validation-for="Antecedence" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Behaviours" class="control-label"></label>
+                    <textarea asp-for="Behaviours" class="form-control" readonly></textarea>
+                    <span asp-validation-for="Behaviours" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Consequence" class="control-label"></label>
+                    <textarea asp-for="Consequence" class="form-control" readonly></textarea>
+                    <span asp-validation-for="Consequence" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Treatment" class="control-label"></label>
+                    <textarea asp-for="Treatment" class="form-control" readonly></textarea>
+                    <span asp-validation-for="Treatment" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h5>Intervention Sessions</h5>
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Session ID</th>
+            <th scope="col">Date</th>
+            <th scope="col">Delivered</th>
+            <th scope="col">Cancelled</th>
+            <th scope="col">Notes Uploaded</th>
+            <th scope="col">Quick Actions </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Session session in Model.Sessions)
+        {
+        <tr>
+            <th scope="row">@session.SessionID</th>
+            <td>@session.SessionTime</td>
+            <td>@session.IsDelivered</td>
+            <td>@session.CancelledBy</td>
+            @if (session.SessionNote == null)
+            {
+                <td>Yes</td>
+            }
+            else
+            {
+                <td>Yes</td>
+            }
+            <td><button class="btn btn-secondary">Information</button></td>
+        </tr>
+        }
+    </tbody>
+</table>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.InterventionID">Edit</a> |
     <a asp-action="Index">Back to List</a>
