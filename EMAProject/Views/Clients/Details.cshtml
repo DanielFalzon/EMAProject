@@ -5,133 +5,165 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<div class="d-flex justify-content-between">
+    <h1>Details Profile</h1>
+    <a asp-action="Edit" asp-route-id="@Model.ClientID" class="btn btn-primary h-50 mt-2" target="_blank"> Edit Profile</a>
+</div>
 
-<div>
-    <h4>Client</h4>
+<br />
+<div class="jumbotron p-0">
+    <a class="btn btn-secondary w-100 text-left d-flex justify-content-between collapsed" data-toggle="collapse" href="#ClientProfile" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <h5>Client Details for @Model.FirstName @Model.Lastname</h5>
+    </a>
+    <div class=" collapse" id="ClientProfile">
+        <div class="row p-4 w-100">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" readonly />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Lastname" class="control-label"></label>
+                    <input asp-for="Lastname" class="form-control" readonly />
+                    <span asp-validation-for="Lastname" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ContactNumber" class="control-label"></label>
+                    <input asp-for="ContactNumber" class="form-control" readonly />
+                    <span asp-validation-for="ContactNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" readonly />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AddressLine1" class="control-label"></label>
+                    <input asp-for="AddressLine1" class="form-control" readonly />
+                    <span asp-validation-for="AddressLine1" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AddressLine2" class="control-label"></label>
+                    <input asp-for="AddressLine2" class="form-control" readonly />
+                    <span asp-validation-for="AddressLine2" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AddressLine3" class="control-label"></label>
+                    <input asp-for="AddressLine3" class="form-control" readonly />
+                    <span asp-validation-for="AddressLine3" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ReferredBy" class="control-label"></label>
+                    <input asp-for="ReferredBy" class="form-control" readonly />
+                    <span asp-validation-for="ReferredBy" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="NiNumber" class="control-label"></label>
+                    <input asp-for="NiNumber" class="form-control" readonly />
+                    <span asp-validation-for="NiNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DateOfBirth" class="control-label"></label>
+                    <input asp-for="DateOfBirth" class="form-control" readonly />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SoRelationship" class="control-label"></label>
+                    <input asp-for="SoRelationship" class="form-control" readonly />
+                    <span asp-validation-for="SoRelationship" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Medications" class="control-label"></label>
+                    <input asp-for="Medications" class="form-control" readonly />
+                    <span asp-validation-for="Medications" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ClientNotes" class="control-label"></label>
+                    <textarea asp-for="ClientNotes" rows="5" class="form-control" readonly></textarea>
+                    <span asp-validation-for="ClientNotes" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Subscriber" disabled /> @Html.DisplayNameFor(model => model.Subscriber)
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="SoFirstName" class="control-label"></label>
+                    <input asp-for="SoFirstName" class="form-control" readonly />
+                    <span asp-validation-for="SoFirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SoLastName" class="control-label"></label>
+                    <input asp-for="SoLastName" class="form-control" readonly />
+                    <span asp-validation-for="SoLastName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SoContactNumber" class="control-label"></label>
+                    <input asp-for="SoContactNumber" class="form-control" readonly />
+                    <span asp-validation-for="SoContactNumber" class="text-danger"></span>
+                </div>
+                <h4>Healthcare Providers</h4>
+                <hr />
+                <table id="hcptable_data" class="table-sm table-striped w-100 my-2">
+                    @foreach (ClientHealthCareProvider hcp in Model.ClientHealthcareProviders)
+                    {
+                        <tr>
+                            <td>@hcp.HealthCareProvider.Name</td>
+                            <td>@hcp.HealthCareProvider.ContactNumber</td>
+                        </tr>
+                    }
+                </table>
+                <br />
+            </div>
+        </div>
+    </div>
+</div>
+
+<section>
+    <h5>Active Client Interventions</h5>
+    <br />
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Start Date</th>
+                <th scope="col">Next Session</th>
+                <th scope="col">Attended Sessions</th>
+                <th scope="col">Cancelled Sessions</th>
+                <th scope="col">Behaviors Addressed </th>
+                <th scope="col">Quick Actions </th>
+            </tr>
+        </thead>
+    </table>
+
+    <div class="d-flex justify-content-end">
+        <a asp-controller="Interventions" asp-action="Create" asp-route-id="@Model.ClientID" class="btn btn-primary">
+            Create Intervention
+        </a>
+
+    </div>
     <hr />
-    <div class="row">
-    <div class="col-md-6">
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.NiNumber)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.NiNumber)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.FirstName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.FirstName)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Lastname)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Lastname)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.DateOfBirth)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.DateOfBirth)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.ContactNumber)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.ContactNumber)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Email)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Email)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.AddressLine1)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.AddressLine1)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.AddressLine2)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.AddressLine2)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.AddressLine3)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.AddressLine3)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.ReferredBy)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.ReferredBy)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Subscriber)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Subscriber)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.ClientNotes)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.ClientNotes)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Medications)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Medications)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.SoFirstName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.SoFirstName)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.SoLastName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.SoLastName)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.SoRelationship)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.SoRelationship)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.SoContactNumber)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.SoContactNumber)
-            </dd>
-        </dl>
-    </div>
-    <div class="col-md-6">
-        <strong>Healthcare Proivders</strong>
-        <table id="hcptable_data" class="table-sm table-striped w-100 my-2">
-            @foreach (ClientHealthCareProvider hcp in Model.ClientHealthcareProviders)
-            {
-                <tr>
-                    <td>@hcp.HealthCareProvider.Name</td>
-                    <td>@hcp.HealthCareProvider.ContactNumber</td>
-                </tr>
-            }
-        </table>
-    </div>
-    </div>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ClientID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+</section>
+
+<section>
+    <h5>Closed Client Interventions</h5>
+    <br />
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Start Date</th>
+                <th scope="col">Next Session</th>
+                <th scope="col">Attended Sessions</th>
+                <th scope="col">Cancelled Sessions</th>
+                <th scope="col">Behaviors Addressed </th>
+                <th scope="col">Quick Actions </th>
+            </tr>
+        </thead>
+    </table>
+</section>

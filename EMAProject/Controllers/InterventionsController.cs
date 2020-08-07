@@ -44,8 +44,11 @@ namespace EMAProject.Controllers
         }
 
         // GET: Interventions/Create
-        public IActionResult Create()
+        public IActionResult Create(int id = -1)
         {
+            if (id > 0) {
+                TempData["Client"] = _context.Clients.Find(id);
+            }
             return View();
         }
 

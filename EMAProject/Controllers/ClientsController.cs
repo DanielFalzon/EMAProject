@@ -55,6 +55,8 @@ namespace EMAProject.Controllers
 
 
             var client = await _context.Clients
+                .Include(c => c.ClientInterventions)
+                .ThenInclude(ci => ci.Intervention)
                 .Include(c => c.ClientHealthcareProviders)
                 .ThenInclude(chp => chp.HealthCareProvider)
                 .FirstOrDefaultAsync(m => m.ClientID == id);
