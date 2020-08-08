@@ -35,7 +35,7 @@ namespace EMAProject.Controllers
             }
 
             var session = await _context.Sessions
-                .Include(s => s.Intervention)
+                .Include(s => s.Intervention).ThenInclude(i => i.ClientInterventions).ThenInclude(i => i.Client)
                 .FirstOrDefaultAsync(m => m.SessionID == id);
             if (session == null)
             {
@@ -46,9 +46,11 @@ namespace EMAProject.Controllers
         }
 
         // GET: Sessions/Create
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
-            ViewData["InterventionID"] = new SelectList(_context.Interventions, "InterventionID", "InterventionID");
+            if (id < 0) { return NotFound();  }
+
+            ViewData["InterventionID"] = id;
             return View();
         }
 
@@ -57,13 +59,14 @@ namespace EMAProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SessionID,SessionTime,IsAccompanied,IsDelivered,CancelledBy,InterventionID")] Session session)
+        public async Task<IActionResult> Create(int id, [Bind("SessionID,SessionTime,IsAccompanied,IsDelivered,CancelledBy,InterventionID,PreSessionNotes")] Session session)
         {
             if (ModelState.IsValid)
             {
+                session.InterventionID = id;
                 _context.Add(session);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("details", "interventions", new { id = session.InterventionID } );
             }
             ViewData["InterventionID"] = new SelectList(_context.Interventions, "InterventionID", "InterventionID", session.InterventionID);
             return View(session);

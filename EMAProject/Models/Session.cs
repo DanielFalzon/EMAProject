@@ -11,7 +11,7 @@ namespace EMAProject.Models
     public class Session
     {
         public enum PersonEntities
-        { 
+        {
             Client,
             AccompanyingClient,
             Therapist
@@ -21,20 +21,25 @@ namespace EMAProject.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SessionID { get; set; }
 
+        [Display(Name = "Session Notes")]
+        public string PreSessionNotes { get; set; }
+
         [Display(Name = "Session Due On")]
         public DateTime SessionTime { get; set; }
 
-        [Display(Name = "Accompanying Client Attended" )]
-        public bool IsAccompanied { get; set; }
+        [Display(Name = "Accompanying Client Attended")]
+        public bool IsAccompanied { get; set; } = false;
 
-        public bool IsDelivered { get; set; }
+        public bool IsDelivered { get; set; } = false;
 
-        public PersonEntities CancelledBy { get; set; }
+        public PersonEntities? CancelledBy { get; set; }
 
         [ForeignKey("Intervention")]
         public int InterventionID { get; set; }
-        public virtual Intervention Intervention { get; set; }
-
-        public virtual SessionNote SessionNote { get; set; }
+        public Intervention Intervention { get; set; }
+        
+        [ForeignKey("SessionNote")]
+        public int? SessionNoteID { get; set; }
+        public SessionNote SessionNote { get; set; }
     }
 }

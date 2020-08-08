@@ -5,11 +5,44 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="modal fade" tabindex="-1" role="dialog" id="CloseInterventionModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Close">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="InterventionID">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="PostInterventionScore" class="control-label"></label>
+                        <input type="number" asp-for="PostInterventionScore" class="form-control" />
+                        <span asp-validation-for="PostInterventionScore" class="text-danger"></span>
+                    </div>
+                    <div class="form-body">
+                        <label asp-for="Treatment" class="control-label"></label>
+                        <textarea asp-for="Treatment" class="form-control"></textarea>
+                        <span asp-validation-for="Treatment" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" value="Close Intervention" class="btn btn-danger" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="d-flex justify-content-between">
     <h1>Intervention Details</h1>
     <div>
-        <a href="#" class="btn btn-primary mt-2">Edit Intervention</a>
-        <a href="#" class="btn btn-danger ml-2 mt-2">Close Intervention</a>
+        <a asp-action="edit" asp-route-id="@Model.InterventionID" class="btn btn-primary mt-2">Edit Intervention</a>
+        <button type="button" data-toggle="modal" data-target="#CloseInterventionModal" class="btn btn-danger ml-2 mt-2" disabled="@Model.IsComplete">Close Intervention</button>
     </div>
 
 </div>
@@ -68,39 +101,46 @@
     </div>
 </div>
 
-<h5>Intervention Sessions</h5>
+<div class="d-flex justify-content-between">
+    <h5>Session Log</h5>
+    <a asp-controller="Sessions" asp-action="Create" asp-route-id="@Model.InterventionID" class="btn btn-primary @Html.Raw(Model.IsComplete?"disabled":"")">
+        Create New Session
+    </a>
+</div>
+<br />
 <table class="table table-striped">
     <thead class="thead-dark">
         <tr>
             <th scope="col">Session ID</th>
             <th scope="col">Date</th>
             <th scope="col">Delivered</th>
-            <th scope="col">Cancelled</th>
             <th scope="col">Notes Uploaded</th>
+            <th scope="col">Cancelled By</th>
             <th scope="col">Quick Actions </th>
         </tr>
     </thead>
     <tbody>
         @foreach (Session session in Model.Sessions)
         {
-        <tr>
-            <th scope="row">@session.SessionID</th>
-            <td>@session.SessionTime</td>
-            <td>@session.IsDelivered</td>
-            <td>@session.CancelledBy</td>
-            @if (session.SessionNote == null)
-            {
-                <td>Yes</td>
-            }
-            else
-            {
-                <td>Yes</td>
-            }
-            <td><button class="btn btn-secondary">Information</button></td>
-        </tr>
+            <tr>
+                <th scope="row">@session.SessionID</th>
+                <td>@session.SessionTime</td>
+                <td>@session.IsDelivered</td>
+                @if (session.SessionNote == null)
+                {
+                    <td>No</td>
+                }
+                else
+                {
+                    <td>Yes</td>
+                }
+                <td>@session.CancelledBy</td>
+                <td><a asp-controller="sessions" asp-action="details" asp-route-id="@session.SessionID" class="btn btn-secondary">View/Edit</a></td>
+            </tr>
         }
     </tbody>
 </table>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.InterventionID">Edit</a> |
     <a asp-action="Index">Back to List</a>

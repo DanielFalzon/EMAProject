@@ -4,14 +4,16 @@ using EMAProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EMAProject.Migrations
 {
     [DbContext(typeof(ClinicContext))]
-    partial class ClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20200808094040_SessionNullableFields")]
+    partial class SessionNullableFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,9 +227,6 @@ namespace EMAProject.Migrations
 
                     b.Property<bool>("IsDelivered")
                         .HasColumnType("bit");
-
-                    b.Property<string>("PreSessionNotes")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SessionNoteID")
                         .HasColumnType("int");

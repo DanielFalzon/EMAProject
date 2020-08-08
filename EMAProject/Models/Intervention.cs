@@ -31,6 +31,8 @@ namespace EMAProject.Models
         public string Consequence { get; set; }
 
         public string Treatment { get; set; }
+
+        //D,F, Calculated Properties
         
         [NotMapped]
         [Display(Name = "Additional Client (Optional)")]
@@ -45,7 +47,12 @@ namespace EMAProject.Models
         [NotMapped]
         public int CancelledSessionCouunt { get; set; } = 0;
         [NotMapped]
-        public bool IsComplete { get; set; }
+        public bool IsComplete { 
+            get {
+                return Treatment != null && Decimal.Compare(PostInterventionScore, 0.00m) > 0;
+            } 
+        }
+
         public ICollection<ClientIntervention> ClientInterventions {get; set;} = new List<ClientIntervention>();
 
         public ICollection<Session> Sessions { get; set; } = new List<Session>();

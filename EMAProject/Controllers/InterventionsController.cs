@@ -38,6 +38,7 @@ namespace EMAProject.Controllers
             var intervention = await _context.Interventions
                 .Include(m => m.ClientInterventions)
                 .ThenInclude(m => m.Client)
+                .Include(m => m.Sessions)
                 .FirstOrDefaultAsync(m => m.InterventionID == id);
             if (intervention == null)
             {
@@ -183,6 +184,39 @@ namespace EMAProject.Controllers
             _context.Interventions.Remove(intervention);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost, ActionName("Close")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CloseIntervention([Bind("InterventionID,PostInterventionScore,Treatment")] Intervention intervention) 
+        {
+            Intervention oldIntervention = await _context.Interventions.FindAsync(intervention.InterventionID);
+            if (oldIntervention != null) 
+            {
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        oldIntervention.PostInterventionScore = intervention.PostInterventionScore;
+                        oldIntervention.Treatment = intervention.Treatment;
+                        _context.Update(oldIntervention);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!InterventionExists(intervention.InterventionID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+            
+            return RedirectToAction("Details", new { id = intervention.InterventionID });
         }
 
         private bool InterventionExists(int id)

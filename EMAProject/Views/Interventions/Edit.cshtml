@@ -16,32 +16,32 @@
             <input type="hidden" asp-for="InterventionID" />
             <div class="form-group">
                 <label asp-for="PreInterventionScore" class="control-label"></label>
-                <input asp-for="PreInterventionScore" class="form-control" />
+                <input type="number" asp-for="PreInterventionScore" class="form-control" />
                 <span asp-validation-for="PreInterventionScore" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PostInterventionScore" class="control-label"></label>
-                <input asp-for="PostInterventionScore" class="form-control" />
+                <input type="number" asp-for="PostInterventionScore" class="form-control" />
                 <span asp-validation-for="PostInterventionScore" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Antecedence" class="control-label"></label>
-                <input asp-for="Antecedence" class="form-control" />
+                <textarea asp-for="Antecedence" class="form-control" ></textarea>
                 <span asp-validation-for="Antecedence" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Behaviours" class="control-label"></label>
-                <input asp-for="Behaviours" class="form-control" />
+                <textarea asp-for="Behaviours" class="form-control"></textarea>
                 <span asp-validation-for="Behaviours" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Consequence" class="control-label"></label>
-                <input asp-for="Consequence" class="form-control" />
+                <textarea asp-for="Consequence" class="form-control"></textarea>
                 <span asp-validation-for="Consequence" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Treatment" class="control-label"></label>
-                <input asp-for="Treatment" class="form-control" />
+                <textarea asp-for="Treatment" class="form-control"></textarea>
                 <span asp-validation-for="Treatment" class="text-danger"></span>
             </div>
             <div class="form-group">
