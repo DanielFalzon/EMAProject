@@ -133,7 +133,7 @@
             Create New Intervention
         </a>
     </div>
-    
+
     <br />
     <table class="table table-striped">
         <thead class="thead-dark">
@@ -149,14 +149,33 @@
         <tbody>
             @foreach (ClientIntervention intervention in Model.ClientInterventions)
             {
-                <tr>
-                    <td>@intervention.Intervention.FirstSession</td>
-                    <td>@intervention.Intervention.NextSession</td>
-                    <td>@intervention.Intervention.AttendedSessionCount</td>
-                    <td>@intervention.Intervention.CancelledSessionCouunt</td>
-                    <td>@intervention.Intervention.Behaviours</td>
-                    <td><a class="btn btn-secondary w-100" asp-controller="interventions" asp-action="details" asp-route-id="@intervention.InterventionID">View/Edit</a></td>
-                </tr>
+                if (!intervention.Intervention.IsComplete)
+                {
+                    <tr>
+                        @if (intervention.Intervention.FirstSession == DateTime.MinValue)
+                        {
+                            <td>No Sessions Logged</td>
+                        }
+                        else
+                        {
+                            <td>@intervention.Intervention.FirstSession.ToLongDateString()</td>
+                        }
+
+                        @if (intervention.Intervention.NextSession == DateTime.MinValue)
+                        {
+                            <td>No Sessions Due</td>
+                        }
+                        else
+                        {
+                            <td>@intervention.Intervention.NextSession.ToLongDateString() at @intervention.Intervention.NextSession.ToLongTimeString()</td>
+                        }
+                        <td>@intervention.Intervention.AttendedSessionCount</td>
+                        <td>@intervention.Intervention.CancelledSessionCouunt</td>
+                        <td>@intervention.Intervention.Behaviours</td>
+                        <td><a class="btn btn-secondary w-100" asp-controller="interventions" asp-action="details" asp-route-id="@intervention.InterventionID" target="_blank">View/Edit</a></td>
+                    </tr>
+                }
+
             }
         </tbody>
     </table>
@@ -179,5 +198,36 @@
                 <th scope="col">Quick Actions </th>
             </tr>
         </thead>
+        <tbody>
+            @foreach (ClientIntervention intervention in Model.ClientInterventions)
+            {
+                if (intervention.Intervention.IsComplete)
+                {
+                    <tr>
+                        @if (intervention.Intervention.FirstSession == DateTime.MinValue)
+                        {
+                            <td>No Sessions Logged</td>
+                        }
+                        else
+                        {
+                            <td>@intervention.Intervention.FirstSession.ToLongDateString()</td>
+                        }
+                        @if (intervention.Intervention.NextSession == DateTime.MinValue)
+                        {
+                            <td>No Sessions Due</td>
+                        }
+                        else
+                        {
+                            <td>@intervention.Intervention.NextSession.ToLongDateString() at @intervention.Intervention.NextSession.ToLongTimeString()</td>
+                        }
+                        <td>@intervention.Intervention.AttendedSessionCount</td>
+                        <td>@intervention.Intervention.CancelledSessionCouunt</td>
+                        <td>@intervention.Intervention.Behaviours</td>
+                        <td><a class="btn btn-secondary w-100" asp-controller="interventions" asp-action="details" asp-route-id="@intervention.InterventionID" target="_blank">View/Edit</a></td>
+                    </tr>
+                }
+
+            }
+        </tbody>
     </table>
 </section>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EMAProject.Data;
 using EMAProject.Models;
+using System.IO;
 
 namespace EMAProject.Controllers
 {
@@ -22,7 +23,7 @@ namespace EMAProject.Controllers
         // GET: Sessions
         public async Task<IActionResult> Index()
         {
-            var clinicContext = _context.Sessions.Include(s => s.Intervention);
+            var clinicContext = _context.Sessions.Include(s => s.Intervention).ThenInclude(ci => ci.ClientInterventions).ThenInclude(ci => ci.Client);
             return View(await clinicContext.ToListAsync());
         }
 
@@ -48,7 +49,7 @@ namespace EMAProject.Controllers
         // GET: Sessions/Create
         public IActionResult Create(int id)
         {
-            if (id < 0) { return NotFound();  }
+            if (id < 0) { return NotFound(); }
 
             ViewData["InterventionID"] = id;
             return View();
@@ -66,7 +67,7 @@ namespace EMAProject.Controllers
                 session.InterventionID = id;
                 _context.Add(session);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("details", "interventions", new { id = session.InterventionID } );
+                return RedirectToAction("details", "interventions", new { id = session.InterventionID });
             }
             ViewData["InterventionID"] = new SelectList(_context.Interventions, "InterventionID", "InterventionID", session.InterventionID);
             return View(session);
@@ -94,7 +95,7 @@ namespace EMAProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SessionID,SessionTime,IsAccompanied,IsDelivered,CancelledBy,InterventionID")] Session session)
+        public async Task<IActionResult> Edit(int id, [Bind("SessionID,SessionTime,IsAccompanied,IsDelivered,CancelledBy,InterventionID,PreSessionNotes")] Session session)
         {
             if (id != session.SessionID)
             {
@@ -153,6 +154,39 @@ namespace EMAProject.Controllers
             _context.Sessions.Remove(session);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost, ActionName("Close")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CloseSession(Session session)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await session.FormFile.CopyToAsync(memoryStream);
+
+                if (memoryStream.Length > 0)
+                {
+                    Session dbSession = await _context.Sessions.FindAsync(session.SessionID);
+
+                    var file = new SessionNote()
+                    {
+                        NoteFile = memoryStream.ToArray()
+                    };
+
+                    _context.SessionNotes.Add(file);
+
+                    await _context.SaveChangesAsync();
+
+                    dbSession.SessionNoteID = file.SessionNoteID;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("details", new { id = session.SessionID });
+        }
+
+        public async Task<ActionResult> ShowNotes(int id) {
+            SessionNote note = await _context.SessionNotes.FindAsync(id);
+            return new FileContentResult(note.NoteFile, "application/pdf");
         }
 
         private bool SessionExists(int id)

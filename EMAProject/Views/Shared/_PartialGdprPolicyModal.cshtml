@@ -1,0 +1,28 @@
+﻿@model EMAProject.Models.WebView
+
+<div class="modal fade" id="GDPRModal" tabindex="-1" role="dialog" aria-labelledby="GDPRModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Page Specific GDPR Policies</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body list-group">
+                @foreach (GdprPolicyWebView gpwv in Model.GdprPolicyWebViews)
+                {
+                    <a href="@gpwv.GdprPolicy.Link" class="list-group-item list-group-item-action flex-column align-items-start" target="_blank">
+                        <h5>@gpwv.GdprPolicy.Title</h5>
+                        <small class="mb-1">@gpwv.GdprPolicy.Description</small>
+                    </a>
+                }
+                <small class="text-center mt-2">Click on the above items to view more details.</small>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

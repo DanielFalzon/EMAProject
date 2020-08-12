@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EMAProject.Models
 {
@@ -13,5 +8,6 @@ namespace EMAProject.Models
         public int SessionNoteID { get; set; }
 
         public byte[] NoteFile { get; set; }
+
     }
 }

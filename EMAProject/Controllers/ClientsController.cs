@@ -28,6 +28,9 @@ namespace EMAProject.Controllers
         // GET: Clients
         public async Task<IActionResult> Index(string sortOrder)
         {
+            ViewData["WebViewGdprPolicies"] = _context.WebViews.Where(wv => String.Equals(wv.ViewName, "Index"))
+                .Include(wv => wv.GdprPolicyWebViews).ThenInclude(gpwv => gpwv.GdprPolicy).FirstOrDefault();
+
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
 
             var clients = from s in _context.Clients select s;
@@ -55,10 +58,8 @@ namespace EMAProject.Controllers
 
 
             var client = await _context.Clients
-                .Include(c => c.ClientInterventions)
-                .ThenInclude(ci => ci.Intervention)
-                .Include(c => c.ClientHealthcareProviders)
-                .ThenInclude(chp => chp.HealthCareProvider)
+                .Include(c => c.ClientInterventions).ThenInclude(ci => ci.Intervention).ThenInclude(i => i.Sessions)
+                .Include(c => c.ClientHealthcareProviders).ThenInclude(chp => chp.HealthCareProvider)
                 .FirstOrDefaultAsync(m => m.ClientID == id);
 
 

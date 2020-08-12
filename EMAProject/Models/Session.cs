@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -30,8 +32,6 @@ namespace EMAProject.Models
         [Display(Name = "Accompanying Client Attended")]
         public bool IsAccompanied { get; set; } = false;
 
-        public bool IsDelivered { get; set; } = false;
-
         public PersonEntities? CancelledBy { get; set; }
 
         [ForeignKey("Intervention")]
@@ -41,5 +41,20 @@ namespace EMAProject.Models
         [ForeignKey("SessionNote")]
         public int? SessionNoteID { get; set; }
         public SessionNote SessionNote { get; set; }
+
+        [NotMapped]
+        public bool IsDelivered
+        {
+            get
+            {
+                return SessionNoteID != null;
+            }
+        }
+
+
+        [NotMapped]
+        [Display(Name = "File")]
+        [BindProperty]
+        public IFormFile FormFile { get; set; }
     }
 }

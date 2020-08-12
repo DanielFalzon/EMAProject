@@ -14,6 +14,7 @@ namespace EMAProject.Models
         public int WebViewID { get; set; }
         [Required]
         public string ViewName { get; set; }
+        public bool PoliciesRead { get; set; }
 
         public ICollection<GdprPolicyWebView> GdprPolicyWebViews { get; set; }
     }

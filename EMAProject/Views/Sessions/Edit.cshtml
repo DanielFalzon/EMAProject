@@ -14,6 +14,8 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="SessionID" />
+            <input type="hidden" asp-for="InterventionID" />
+            <input type="hidden" asp-for="SessionNoteID" />
             <div class="form-group">
                 <label asp-for="SessionTime" class="control-label"></label>
                 <input asp-for="SessionTime" class="form-control" />
@@ -24,15 +26,15 @@
                     <input class="form-check-input" asp-for="IsAccompanied" /> @Html.DisplayNameFor(model => model.IsAccompanied)
                 </label>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDelivered" /> @Html.DisplayNameFor(model => model.IsDelivered)
-                </label>
-            </div>
             <div class="form-group">
                 <label asp-for="CancelledBy" class="control-label"></label>
                 <select asp-for="CancelledBy" class="form-control"></select>
                 <span asp-validation-for="CancelledBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PreSessionNotes" class="control-label"></label>
+                <textarea rows="1" asp-for="PreSessionNotes" class="form-control"></textarea>
+                <span asp-validation-for="PreSessionNotes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

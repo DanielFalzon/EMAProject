@@ -39,13 +39,53 @@ namespace EMAProject.Models
         public string AdditionalClientID { get; set; }
         //https://stackoverflow.com/questions/23413296/calculated-property-with-linq-expression
         [NotMapped]
-        public DateTime FirstSession { get; set; } = DateTime.Now;
+        public DateTime FirstSession { 
+            get 
+            {
+                var result = Sessions.OrderByDescending(x => x.SessionTime).FirstOrDefault();
+                if (result != null)
+                {
+                    return result.SessionTime;
+                }
+                else 
+                {
+                    return DateTime.MinValue;
+                }
+            } 
+        }
         [NotMapped]
-        public DateTime NextSession { get; set; } = DateTime.Now;
+        public DateTime NextSession { 
+            get 
+            {
+                var result = Sessions.Where(s => s.SessionTime > DateTime.Now).OrderBy(s => s.SessionTime).FirstOrDefault();
+                if (result != null)
+                {
+                    return result.SessionTime;
+                }
+                else
+                {
+                    return DateTime.MinValue;
+                }
+
+            } 
+        } 
+
         [NotMapped]
-        public int AttendedSessionCount { get; set; } = 0;
+        public int AttendedSessionCount { 
+            get 
+            {
+                return Sessions.Where(x => x.SessionNoteID != null).ToList().Count;
+            } 
+        }
+
         [NotMapped]
-        public int CancelledSessionCouunt { get; set; } = 0;
+        public int CancelledSessionCouunt { 
+            get 
+            {
+                return Sessions.Where(x => x.CancelledBy != null).ToList().Count;
+            } 
+        }
+
         [NotMapped]
         public bool IsComplete { 
             get {

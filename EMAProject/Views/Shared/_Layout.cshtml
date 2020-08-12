@@ -24,6 +24,17 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            @if (ViewData["WebViewGdprPolicies"] != null)
+                            {
+                                <a data-toggle="modal" data-target="#GDPRModal" href="#" class="nav-link text-dark">GDPR Policies</a>
+                            }
+                            else
+                            {
+                                <a href="https://ico.org.uk/for-organisations/guide-to-data-protection/guide-to-the-general-data-protection-regulation-gdpr/" target="_blank" class="nav-link text-dark">GDPR Policies</a>
+                            }
+
+                        </li>
                     </ul>
 
                 </div>
@@ -33,6 +44,11 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (ViewData["WebViewGdprPolicies"] != null)
+            {
+                WebView partialModel = (WebView)ViewData["WebViewGdprPolicies"];
+                <partial name="_PartialGdprPolicyModal" model="partialModel" />
+            }
             @RenderBody()
         </main>
     </div>

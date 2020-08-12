@@ -14,10 +14,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PreInterventionScore)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostInterventionScore)
+                Clients
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Antecedence)
@@ -38,10 +35,11 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.PreInterventionScore)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostInterventionScore)
+                @foreach (ClientIntervention ci in item.ClientInterventions) 
+                { 
+                    string name = $"{ci.Client.FirstName} {ci.Client.Lastname}";
+                    <p> @name  </p>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Antecedence)
@@ -57,8 +55,7 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.InterventionID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.InterventionID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.InterventionID">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.InterventionID">Details</a> 
             </td>
         </tr>
 }

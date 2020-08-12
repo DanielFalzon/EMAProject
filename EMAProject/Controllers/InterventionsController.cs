@@ -24,7 +24,7 @@ namespace EMAProject.Controllers
         // GET: Interventions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Interventions.ToListAsync());
+            return View(await _context.Interventions.Include(i => i.ClientInterventions).ThenInclude(ci => ci.Client).ToListAsync());
         }
 
         // GET: Interventions/Details/5

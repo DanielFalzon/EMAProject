@@ -14,6 +14,9 @@
     <thead>
         <tr>
             <th>
+                Client/s    
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.SessionTime)
             </th>
             <th>
@@ -34,6 +37,13 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @foreach (ClientIntervention ci in item.Intervention.ClientInterventions)
+                {
+                    string name = $"{ci.Client.FirstName} {ci.Client.Lastname}";
+                    <p> @name  </p>
+                }
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SessionTime)
             </td>

@@ -5,18 +5,55 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Session Details</h1>
-<br/>
+<div class="modal fade" tabindex="-1" role="dialog" id="CloseSessionModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cloce Session</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form enctype="multipart/form-data" asp-action="Close">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="SessionID">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="FormFile" class="control-label"></label>
+                        <input type="file" asp-for="FormFile" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" value="Upload Session Notes" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between">
+    <h1>Session Details</h1>
+    <div class="mt-3 d-flex justify-content-end flex-grow-1">
+        <a asp-action="edit" asp-route-id="@Model.SessionID" class="btn btn-primary">Edit Session</a>
+        <button class="btn btn-primary d-block ml-2" data-toggle="modal" data-target="#CloseSessionModal" @Html.Raw(Model.IsDelivered ? "disabled" : "")>Close Session</button>
+        <button class="btn btn-danger d-block ml-2" @Html.Raw(Model.SessionNoteID != null ? "disabled" : "")>Cancel Session</button>
+    </div>
+
+</div>
+
+<br />
 <div class="jumbotron py-4">
     <div class="row mb-4">
-        <h4>
-            Session for @{
-                @foreach (ClientIntervention ci in Model.Intervention.ClientInterventions)
-                {
-                    <span>@ci.Client.FirstName</span> <span>@ci.Client.Lastname</span>
-                }
-            } on @Model.SessionTime.ToLongDateString()
-        </h4>    
+        <col-md-8>
+            <h4>
+                Session for @{
+                    @foreach (ClientIntervention ci in Model.Intervention.ClientInterventions)
+                    {
+                        <span>@ci.Client.FirstName</span> <span>@ci.Client.Lastname</span>
+                    }
+                } on @Model.SessionTime.ToLongDateString()
+            </h4>
     </div>
 
     <div class="row">
@@ -37,20 +74,31 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label class="control-label">Intervention Behaviours</label>
-                <textarea class="form-control" readonly>@Model.Intervention.Behaviours</textarea>
+                <label asp-for="PreSessionNotes" class="control-label"></label>
+                <textarea asp-for="PreSessionNotes" class="form-control" rows="1" readonly></textarea>
             </div>
+
         </div>
         <div class="col-md-3">
-            <label class="control-label">Actions</label>
-                <button class="btn btn-danger d-block w-100">Cancel Session</button>
-                <button class="btn btn-primary d-block w-100 mt-3">Close Session</button>
+            <div class="form-group">
+                <label class="control-label">Intervention Behaviours</label>
+                <textarea class="form-control" rows="1" readonly>@Model.Intervention.Behaviours</textarea>
+            </div>
+
         </div>
     </div>
-    
 </div>
+<br />
+
+@if (Model.IsDelivered)
+{
+    <p class="text-center">View session notes <a asp-action="shownotes" asp-route-id="@Model.SessionNoteID" target="_blank">here</a>.</p>
+}
+else
+{
+    <p class="text-center">Upload session notes to display a preview of the notes here.</p>
+}
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.SessionID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="interventions" asp-action="details" asp-route-id="@Model.InterventionID">Intervention Details</a> |
 </div>

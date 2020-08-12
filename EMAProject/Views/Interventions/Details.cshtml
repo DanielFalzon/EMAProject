@@ -9,7 +9,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+                <h5 class="modal-title">Cloce Intervention</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -76,24 +76,24 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="Antecedence" class="control-label"></label>
-                    <textarea asp-for="Antecedence" class="form-control" readonly></textarea>
+                    <textarea rows="1" asp-for="Antecedence" class="form-control" readonly></textarea>
                     <span asp-validation-for="Antecedence" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Behaviours" class="control-label"></label>
-                    <textarea asp-for="Behaviours" class="form-control" readonly></textarea>
+                    <textarea rows="1" asp-for="Behaviours" class="form-control" readonly></textarea>
                     <span asp-validation-for="Behaviours" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="Consequence" class="control-label"></label>
-                    <textarea asp-for="Consequence" class="form-control" readonly></textarea>
+                    <textarea rows="1" asp-for="Consequence" class="form-control" readonly></textarea>
                     <span asp-validation-for="Consequence" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Treatment" class="control-label"></label>
-                    <textarea asp-for="Treatment" class="form-control" readonly></textarea>
+                    <textarea rows="1" asp-for="Treatment" class="form-control" readonly></textarea>
                     <span asp-validation-for="Treatment" class="text-danger"></span>
                 </div>
             </div>
@@ -126,7 +126,7 @@
                 <th scope="row">@session.SessionID</th>
                 <td>@session.SessionTime</td>
                 <td>@session.IsDelivered</td>
-                @if (session.SessionNote == null)
+                @if (session.SessionNoteID == null)
                 {
                     <td>No</td>
                 }
@@ -142,6 +142,5 @@
 </table>
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.InterventionID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Intervention List</a>
 </div>
