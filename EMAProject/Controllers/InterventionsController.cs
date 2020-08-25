@@ -9,22 +9,35 @@ using EMAProject.Data;
 using EMAProject.Models;
 using EMAProject.Common;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace EMAProject.Controllers
 {
     public class InterventionsController : Controller
     {
         private readonly ClinicContext _context;
+        private readonly IDataProtector _protector;
 
-        public InterventionsController(ClinicContext context)
+        public InterventionsController(ClinicContext context, IDataProtectionProvider provider)
         {
             _context = context;
+            _protector = provider.CreateProtector("EMAProject.ContentEncryptor.v1");
         }
 
         // GET: Interventions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Interventions.Include(i => i.ClientInterventions).ThenInclude(ci => ci.Client).ToListAsync());
+            ViewData["WebViewGdprPolicies"] = _context.WebViews.Where(wv => String.Equals(wv.ViewName, "Index"))
+                .Include(wv => wv.GdprPolicyWebViews).ThenInclude(gpwv => gpwv.GdprPolicy).FirstOrDefault();
+
+            List<Intervention> interventions = await _context.Interventions.Include(i => i.ClientInterventions).ThenInclude(ci => ci.Client).ToListAsync();
+
+            foreach (ClientIntervention ci in interventions.SelectMany(i => i.ClientInterventions))
+            {
+                ci.Client.UnProtect(_protector);
+            }
+
+            return View(interventions);
         }
 
         // GET: Interventions/Details/5
@@ -34,6 +47,9 @@ namespace EMAProject.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["WebViewGdprPolicies"] = _context.WebViews.Where(wv => String.Equals(wv.ViewName, "Details"))
+                .Include(wv => wv.GdprPolicyWebViews).ThenInclude(gpwv => gpwv.GdprPolicy).FirstOrDefault();
 
             var intervention = await _context.Interventions
                 .Include(m => m.ClientInterventions)
@@ -45,6 +61,11 @@ namespace EMAProject.Controllers
                 return NotFound();
             }
 
+            foreach (ClientIntervention ci in intervention.ClientInterventions) 
+            {
+                ci.Client.UnProtect(_protector);
+            }
+
             return View(intervention);
         }
 
@@ -52,7 +73,10 @@ namespace EMAProject.Controllers
         public IActionResult Create(int id = -1)
         {
             if (id <= 0) { return NotFound(); }
-            
+
+            ViewData["WebViewGdprPolicies"] = _context.WebViews.Where(wv => String.Equals(wv.ViewName, "Create/Edit"))
+                .Include(wv => wv.GdprPolicyWebViews).ThenInclude(gpwv => gpwv.GdprPolicy).FirstOrDefault();
+
             TempData["Client"] = _context.Clients.Find(id);
             HttpContext.Session.SetComplexData("InterventionSelectedClient", TempData["Client"]);
 
@@ -165,8 +189,12 @@ namespace EMAProject.Controllers
                 return NotFound();
             }
 
+            ViewData["WebViewGdprPolicies"] = _context.WebViews.Where(wv => String.Equals(wv.ViewName, "Create/Edit"))
+                .Include(wv => wv.GdprPolicyWebViews).ThenInclude(gpwv => gpwv.GdprPolicy).FirstOrDefault();
+
             var intervention = await _context.Interventions
                 .FirstOrDefaultAsync(m => m.InterventionID == id);
+
             if (intervention == null)
             {
                 return NotFound();

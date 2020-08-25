@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EMAProject.Data;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
@@ -37,6 +38,9 @@ namespace EMAProject
             })
             .AddRazorRuntimeCompilation()
             .AddSessionStateTempDataProvider();
+
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(new System.IO.DirectoryInfo(@"D:\EMAProject\EMAProject\EMAProject\Keys"));
 
             services.AddControllersWithViews();
             services.AddRazorPages();

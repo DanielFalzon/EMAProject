@@ -9,7 +9,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body list-group">
+            <div class="modal-body list-group" style="overflow-y:scroll;max-height:545px;">
                 @foreach (GdprPolicyWebView gpwv in Model.GdprPolicyWebViews)
                 {
                     <a href="@gpwv.GdprPolicy.Link" class="list-group-item list-group-item-action flex-column align-items-start" target="_blank">

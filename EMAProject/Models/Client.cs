@@ -1,10 +1,14 @@
 ﻿using EMAProject.Data;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EMAProject.Models
@@ -46,7 +50,7 @@ namespace EMAProject.Models
 
         [Display(Name = "Road Name")]
         public string AddressLine2 { get; set; }
-        
+
         [Display(Name = "Locality")]
         public string AddressLine3 { get; set; }
 
@@ -55,11 +59,11 @@ namespace EMAProject.Models
 
         [Display(Name = "Subscribe Client to Content")]
         public bool Subscriber { get; set; }
-        
-        [Display (Name = "Additional Client Notes")]
+
+        [Display(Name = "Additional Client Notes")]
         public string ClientNotes { get; set; }
-        
-        [Display (Name = "Medications")]
+
+        [Display(Name = "Medications")]
         public string Medications { get; set; }
 
         //Significant Other Information
@@ -79,11 +83,54 @@ namespace EMAProject.Models
 
         public List<ClientIntervention> ClientInterventions { get; set; } = new List<ClientIntervention>();
 
-        public void SetHealthCareProviders(ClinicContext _context) {
+        //D.F. Create a function determining which fields should be encrypted...
+        public void Protect(IDataProtector _protector)
+        {
+            PropertyInfo[] properties = typeof(Client).GetProperties();
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    var value = this.GetType().GetProperty(property.Name).GetValue(this, null);
+                    if (value != null)
+                    {
+                        property.SetValue(this, _protector.Protect(value.ToString()));
+                    }
+                }
+            }
+        }
+
+        //D.F. Create a function determining which fields should be decrypted...
+        public void UnProtect(IDataProtector _protector)
+        {
+            PropertyInfo[] properties = typeof(Client).GetProperties();
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    var value = this.GetType().GetProperty(property.Name).GetValue(this, null);
+                    if (value != null) 
+                    {
+                        try
+                        {
+                            property.SetValue(this, _protector.Unprotect(value.ToString()));
+                        }
+                        catch(Exception ex)
+                        {
+                           
+                        }
+                    }
+                }
+            }
+        }
+
+        public void SetHealthCareProviders(ClinicContext _context)
+        {
             this.ClientHealthcareProviders = _context.Clients.Where(c => c.ClientID == ClientID).Include(c => c.ClientHealthcareProviders).Select(c => c.ClientHealthcareProviders).SingleOrDefault().ToList();
         }
 
-        public void ToggleHealthCareProviders(ClinicContext _context, List<int> inSelectedHcps) {
+        public void ToggleHealthCareProviders(ClinicContext _context, List<int> inSelectedHcps)
+        {
             SetHealthCareProviders(_context);
 
             List<int> clientHcps = this.ClientHealthcareProviders.Select(x => x.HealthCareProviderID).ToList();

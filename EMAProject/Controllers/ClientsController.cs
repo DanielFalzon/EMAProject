@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EMAProject.Data;
 using EMAProject.Models;
-using System.Runtime.InteropServices;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
-using Microsoft.CodeAnalysis.FlowAnalysis;
 using EMAProject.Classes;
 using EMAProject.Common;
-using System.Runtime.InteropServices.ComTypes;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EMAProject.Controllers
 {
     public class ClientsController : Controller
     {
         private readonly ClinicContext _context;
+        private readonly IDataProtector _protector;
 
-        public ClientsController(ClinicContext context)
+        public ClientsController(ClinicContext context, IDataProtectionProvider provider)
         {
             _context = context;
+            _protector = provider.CreateProtector("EMAProject.ContentEncryptor.v1");
         }
 
         // GET: Clients
@@ -35,6 +34,7 @@ namespace EMAProject.Controllers
 
             var clients = from s in _context.Clients select s;
 
+
             switch (sortOrder)
             {
                 case "name_desc":
@@ -45,7 +45,14 @@ namespace EMAProject.Controllers
                     break;
             }
 
-            return View(await clients.AsNoTracking().ToListAsync());
+            IEnumerable<Client> orderedClients = await clients.AsNoTracking().ToListAsync();
+
+            foreach (Client client in orderedClients)
+            {
+                client.UnProtect(_protector);
+            }
+
+            return View(orderedClients);
         }
 
         // GET: Clients/Details/5
@@ -56,12 +63,15 @@ namespace EMAProject.Controllers
                 return NotFound();
             }
 
+            ViewData["WebViewGdprPolicies"] = _context.WebViews.Where(wv => String.Equals(wv.ViewName, "Details"))
+                .Include(wv => wv.GdprPolicyWebViews).ThenInclude(gpwv => gpwv.GdprPolicy).FirstOrDefault();
 
             var client = await _context.Clients
                 .Include(c => c.ClientInterventions).ThenInclude(ci => ci.Intervention).ThenInclude(i => i.Sessions)
                 .Include(c => c.ClientHealthcareProviders).ThenInclude(chp => chp.HealthCareProvider)
                 .FirstOrDefaultAsync(m => m.ClientID == id);
 
+            client.UnProtect(_protector);
 
             if (client == null)
             {
@@ -84,6 +94,9 @@ namespace EMAProject.Controllers
                 TempData["ClientCreateChosenHCP"] = new List<int>();
             }
 
+            ViewData["WebViewGdprPolicies"] = _context.WebViews.Where(wv => String.Equals(wv.ViewName, "Create/Edit"))
+                .Include(wv => wv.GdprPolicyWebViews).ThenInclude(gpwv => gpwv.GdprPolicy).FirstOrDefault();
+
             IHealthCareProviderService healthCareProviderService = new HealthCareProviderService(_context);
 
             HttpContext.Session.SetComplexData("HCPSelectedItems", new List<int>());
@@ -104,8 +117,8 @@ namespace EMAProject.Controllers
             if (ModelState.IsValid)
             {
                 List<int> selectedHcps = HttpContext.Session.GetComplexData<List<int>>("HCPSelectedItems");
-                
 
+                client.Protect(_protector);
                 _context.Add(client);
                 await _context.SaveChangesAsync();
 
@@ -136,10 +149,15 @@ namespace EMAProject.Controllers
                 return NotFound();
             }
 
+            ViewData["WebViewGdprPolicies"] = _context.WebViews.Where(wv => String.Equals(wv.ViewName, "Create/Edit"))
+                .Include(wv => wv.GdprPolicyWebViews).ThenInclude(gpwv => gpwv.GdprPolicy).FirstOrDefault();
+
             var client = await _context.Clients.
                 Include(c => c.ClientHealthcareProviders)
                 .ThenInclude(hcp => hcp.HealthCareProvider)
                 .FirstOrDefaultAsync(c => c.ClientID == id);
+
+            client.UnProtect(_protector);
 
             List<int> hcpSelectedItems = new List<int>();
 
@@ -179,7 +197,8 @@ namespace EMAProject.Controllers
                     //EMA Code Snippet
                     //HttpContext.Session.GetComplexData<List<int>>("HCPSelectedItems")
                     client.ToggleHealthCareProviders(_context, HttpContext.Session.GetComplexData<List<int>>("HCPSelectedItems"));
-
+                    
+                    client.Protect(_protector);
                     _context.Update(client);
                     await _context.SaveChangesAsync();
                 }
